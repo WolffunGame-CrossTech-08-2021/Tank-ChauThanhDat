@@ -12,6 +12,11 @@ public class NormalMovingShell : ShellBase
         ShellPoolManager.instance.CollectShell(this);
     }
 
+    public override void Deactive()
+    {
+        return;
+    }
+
     public override void EnemyFind(GameObject enemy)
     {
         return;

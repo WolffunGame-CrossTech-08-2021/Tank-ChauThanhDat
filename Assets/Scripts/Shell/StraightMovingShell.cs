@@ -42,7 +42,11 @@ public class StraightMovingShell : ShellBase
 
     public override void BackToPool()
     {
-        isActive = false;
         ShellPoolManager.instance.CollectShell(this);
+    }
+
+    public override void Deactive()
+    {
+        isActive = false;
     }
 }

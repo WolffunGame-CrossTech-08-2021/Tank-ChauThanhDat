@@ -14,4 +14,6 @@ public abstract class ShellBase : MonoBehaviour
     public abstract void EnemyFind(GameObject enemy);
 
     public abstract void BackToPool();
+
+    public abstract void Deactive();
 }

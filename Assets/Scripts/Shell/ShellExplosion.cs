@@ -48,13 +48,15 @@ public class ShellExplosion : MonoBehaviour
             targetHealth.TakeDamage(damage);
         }
 
-        m_ExplosionParticles.transform.parent = null;
+        //m_ExplosionParticles.transform.parent = null;
+        parentShell.Deactive();
+        StartCoroutine(WaitEffectOffToBack());
         m_ExplosionParticles.Play();
-
         m_ExplosionAudio.Play();
 
-        Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.main.duration);
-        Destroy(gameObject);
+        //Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.main.duration);
+        //Destroy(gameObject);
+        
     }
 
     public void Explose()
@@ -87,12 +89,13 @@ public class ShellExplosion : MonoBehaviour
 
         //Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.main.duration);
         //Destroy(gameObject);
+        parentShell.Deactive();
         StartCoroutine(WaitEffectOffToBack());
     }
 
     IEnumerator WaitEffectOffToBack()
     {
-        yield return new WaitForSeconds(m_ExplosionParticles.main.duration);
+        yield return new WaitForSeconds(m_ExplosionParticles.main.duration - 1f);
         parentShell.BackToPool();
     }
 

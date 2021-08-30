@@ -16,10 +16,14 @@ public class ChasingMovingShell : ShellBase
 
     public override void BackToPool()
     {
+        ShellPoolManager.instance.CollectShell(this);
+    }
+
+    public override void Deactive()
+    {
         target = null;
         isActive = false;
         isChasing = false;
-        ShellPoolManager.instance.CollectShell(this);
     }
 
     public override void EnemyFind(GameObject enemy)

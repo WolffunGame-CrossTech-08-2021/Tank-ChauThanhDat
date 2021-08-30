@@ -20,8 +20,12 @@ public class TwistMovingShell : ShellBase
 
     public override void BackToPool()
     {
-        isActive = false;
         ShellPoolManager.instance.CollectShell(this);
+    }
+
+    public override void Deactive()
+    {
+        isActive = false;
     }
 
     public override void EnemyFind(GameObject enemy)
