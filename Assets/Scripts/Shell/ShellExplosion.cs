@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class ShellExplosion : MonoBehaviour
 {
@@ -8,17 +9,23 @@ public class ShellExplosion : MonoBehaviour
     public float m_MaxDamage = 100f;                  
     public float m_ExplosionForce = 1000f;            
     public float m_MaxLifeTime = 2f;                  
-    public float m_ExplosionRadius = 5f;              
+    public float m_ExplosionRadius = 5f;
+    public ShellBase parentShell;
+    [HideInInspector] public GameObject player;
 
 
-    private void Start()
-    {
-        Destroy(gameObject, m_MaxLifeTime);
-    }
+    //private void Start()
+    //{
+    //    //Destroy(gameObject, m_MaxLifeTime);
+    //}
 
 
     private void OnTriggerEnter(Collider other)
     {
+        if(player!=null && other.gameObject == player)
+        {
+            return;
+        }
         // Find all the tanks in an area around the shell and damage them.
         Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius, m_TankMask);
 
@@ -26,16 +33,16 @@ public class ShellExplosion : MonoBehaviour
         {
             Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody>();
 
-            if(!targetRigidbody)
+            if (!targetRigidbody)
                 continue;
 
             targetRigidbody.AddExplosionForce(m_ExplosionForce, transform.position, m_ExplosionRadius);
 
             TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth>();
 
-            if(!targetHealth)
+            if (!targetHealth)
                 continue;
-            
+
             float damage = CalculateDamage(targetRigidbody.position);
 
             targetHealth.TakeDamage(damage);
@@ -45,9 +52,48 @@ public class ShellExplosion : MonoBehaviour
         m_ExplosionParticles.Play();
 
         m_ExplosionAudio.Play();
-        
+
         Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.main.duration);
         Destroy(gameObject);
+    }
+
+    public void Explose()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius, m_TankMask);
+
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody>();
+
+            if (!targetRigidbody)
+                continue;
+
+            targetRigidbody.AddExplosionForce(m_ExplosionForce, transform.position, m_ExplosionRadius);
+
+            TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth>();
+
+            if (!targetHealth)
+                continue;
+
+            float damage = CalculateDamage(targetRigidbody.position);
+
+            targetHealth.TakeDamage(damage);
+        }
+
+        //m_ExplosionParticles.transform.parent = null;
+        m_ExplosionParticles.Play();
+
+        m_ExplosionAudio.Play();
+
+        //Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.main.duration);
+        //Destroy(gameObject);
+        StartCoroutine(WaitEffectOffToBack());
+    }
+
+    IEnumerator WaitEffectOffToBack()
+    {
+        yield return new WaitForSeconds(m_ExplosionParticles.main.duration);
+        parentShell.BackToPool();
     }
 
 
