@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public Text m_MessageText;
     public GameObject m_TankPrefab;
     public TankManager[] m_Tanks;
+    //for singleton
     public static GameManager instance;
 
 
