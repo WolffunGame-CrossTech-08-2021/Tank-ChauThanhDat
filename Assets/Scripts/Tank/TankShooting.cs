@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-[CreateAssetMenu(fileName = "NewNormalShoot", menuName = "Normal Shoot")]
-public class TankShooting : ScriptableObject
+public class TankShooting : MonoBehaviour
 {
     public int m_PlayerNumber;
     public Rigidbody m_Shell;
     public Transform m_FireTransform;
     public Slider m_AimSlider;
-    //public AudioSource m_ShootingAudio;  
+    public AudioSource m_ShootingAudio;
     public AudioClip m_ChargingClip;
     public AudioClip m_FireClip;
     public float m_MinLaunchForce = 15f;
@@ -30,7 +27,6 @@ public class TankShooting : ScriptableObject
         m_AimSlider.value = m_MinLaunchForce / 100;
     }
 
-
     public void Start()
     {
         m_FireButton = "Fire" + m_PlayerNumber;
@@ -40,7 +36,7 @@ public class TankShooting : ScriptableObject
         m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
     }
 
-    public void onUpdate(Transform t)
+    public void Update()
     {
         m_AimSlider.value = m_MinLaunchForce / 100;
 
@@ -48,7 +44,7 @@ public class TankShooting : ScriptableObject
         {
             // at max charge, not yet fired
             m_CurrentLaunchForce = m_MaxLaunchForce;
-            Fire(t);
+            Fire();
         }
         else if(Input.GetButtonDown(m_FireButton))
         {
@@ -56,8 +52,8 @@ public class TankShooting : ScriptableObject
             m_Fired = false;
             m_CurrentLaunchForce = m_MinLaunchForce;
 
-            //m_ShootingAudio.clip = m_ChargingClip;
-            //m_ShootingAudio.Play();
+            m_ShootingAudio.clip = m_ChargingClip;
+            m_ShootingAudio.Play();
         }
         else if(Input.GetButton(m_FireButton) && !m_Fired)
         {
@@ -69,25 +65,23 @@ public class TankShooting : ScriptableObject
         else if(Input.GetButtonUp(m_FireButton) && !m_Fired)
         {
             // we released the button, having not fired yet
-            Fire(t);
+            Fire();
         }
     }
 
-    public virtual void Fire(Transform t)
+    public void Fire()
     {
         Debug.Log("Fire " + m_PlayerNumber);
 
         // Instantiate and launch the shell.
         m_Fired = true;
 
-        m_FireTransform = t;
-
         Rigidbody shellInstance = Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
 
         shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
 
-        //m_ShootingAudio.clip = m_FireClip;
-        //m_ShootingAudio.Play();
+        m_ShootingAudio.clip = m_FireClip;
+        m_ShootingAudio.Play();
 
         m_CurrentLaunchForce = m_MinLaunchForce;
     }
