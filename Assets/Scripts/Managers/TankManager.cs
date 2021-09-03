@@ -4,27 +4,33 @@ using UnityEngine;
 [Serializable]
 public class TankManager
 {
-    public Color m_PlayerColor;            
-    public Transform m_SpawnPoint;         
-    [HideInInspector] public int m_PlayerNumber;             
+    public Color m_PlayerColor;
+    public Transform m_SpawnPoint;
+    [HideInInspector] public int m_PlayerNumber;
     [HideInInspector] public string m_ColoredPlayerText;
-    [HideInInspector] public GameObject m_Instance;          
-    [HideInInspector] public int m_Wins;                     
+    [HideInInspector] public GameObject m_Instance;
+    [HideInInspector] public int m_Wins;
 
 
-    private TankMovement m_Movement;       
+    private TankMovement m_Movement;
     private TankShooting m_Shooting;
     private GameObject m_CanvasGameObject;
+    private TankBehaviour m_MonoBehaviour;
 
 
     public void Setup()
     {
+        Debug.Log("SETUP: " + m_PlayerNumber);
+
+        m_MonoBehaviour = m_Instance.GetComponent<TankBehaviour>();
+
         m_Movement = m_Instance.GetComponent<TankMovement>();
-        m_Shooting = m_Instance.GetComponent<TankShooting>();
+        //m_Shooting = m_MonoBehaviour.TankShooting;
         m_CanvasGameObject = m_Instance.GetComponentInChildren<Canvas>().gameObject;
 
         m_Movement.m_PlayerNumber = m_PlayerNumber;
-        m_Shooting.m_PlayerNumber = m_PlayerNumber;
+        //m_Shooting.m_PlayerNumber = m_PlayerNumber;
+        m_MonoBehaviour.m_PlayerNumber = m_PlayerNumber;
 
         m_ColoredPlayerText = "<color=#" + ColorUtility.ToHtmlStringRGB(m_PlayerColor) + ">PLAYER " + m_PlayerNumber + "</color>";
 
@@ -40,7 +46,8 @@ public class TankManager
     public void DisableControl()
     {
         m_Movement.enabled = false;
-        m_Shooting.enabled = false;
+        m_MonoBehaviour.enabled = false;
+        //m_Shooting.enabled = false;
 
         m_CanvasGameObject.SetActive(false);
     }
@@ -49,7 +56,8 @@ public class TankManager
     public void EnableControl()
     {
         m_Movement.enabled = true;
-        m_Shooting.enabled = true;
+        m_MonoBehaviour.enabled = true;
+        //m_Shooting.enabled = true;
 
         m_CanvasGameObject.SetActive(true);
     }
