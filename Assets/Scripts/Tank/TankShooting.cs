@@ -3,8 +3,8 @@ using UnityEngine.UI;
 
 public class TankShooting : MonoBehaviour
 {
-    public int m_PlayerNumber = 1;       
-    public Rigidbody m_Shell;            
+    public int m_PlayerNumber = 1;
+    public ShellPoolManager.ShellType shellType;            
     public Transform m_FireTransform;    
     public Slider m_AimSlider;           
     public AudioSource m_ShootingAudio;  
@@ -31,7 +31,7 @@ public class TankShooting : MonoBehaviour
     private void Start()
     {
         m_FireButton = "Fire" + m_PlayerNumber;
-
+        ShellPoolManager.instance.CreatePool(shellType);
         m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
     }
     
@@ -76,9 +76,10 @@ public class TankShooting : MonoBehaviour
         // Instantiate and launch the shell.
         m_Fired = true;
 
-        Rigidbody shellInstance = Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
-
-        shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
+        ShellBase shellInstance = ShellPoolManager.instance.GetShell(shellType);
+        float forceAmount = Mathf.InverseLerp(m_MinLaunchForce, m_MaxLaunchForce, m_CurrentLaunchForce);
+        shellInstance.gameObject.SetActive(true);
+        shellInstance.Fire(m_FireTransform, forceAmount, gameObject);
 
         m_ShootingAudio.clip = m_FireClip;
         m_ShootingAudio.Play();

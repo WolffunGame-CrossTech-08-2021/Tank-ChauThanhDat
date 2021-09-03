@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public Text m_MessageText;
     public GameObject m_TankPrefab;
     public TankManager[] m_Tanks;
+    public static GameManager instance;
 
 
     private int m_RoundNumber;
@@ -19,6 +20,11 @@ public class GameManager : MonoBehaviour
     private WaitForSeconds m_EndWait;
     private TankManager m_RoundWinner;
     private TankManager m_GameWinner;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     private void Start()
     {
