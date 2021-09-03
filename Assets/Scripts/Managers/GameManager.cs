@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public Text m_MessageText;
     public GameObject m_TankPrefab;
     public TankManager[] m_Tanks;
+    public BaseShootingStyle[] shootingStyle;
     //for singleton
     public static GameManager instance;
 
@@ -47,6 +48,8 @@ public class GameManager : MonoBehaviour
                 Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
             m_Tanks[i].m_PlayerNumber = i + 1;
             m_Tanks[i].Setup();
+            TankShooting temp = m_Tanks[i].m_Instance.GetComponent<TankShooting>();
+            temp.SetUp(shootingStyle[i]);
         }
     }
 

@@ -13,8 +13,11 @@ public class StraightMovingShell : ShellBase
     private float lifeTime;
     public override void Fire(Transform fireTransform, float forceAmount, GameObject player)
     {
-        transform.rotation = new Quaternion(0, fireTransform.rotation.y, 0, fireTransform.rotation.w);
         transform.position = fireTransform.position;
+        //transform.rotation = new Quaternion(0, fireTransform.rotation.y, 0, fireTransform.rotation.w);
+        Vector3 aVec = fireTransform.forward;
+        aVec.y = 0;
+        transform.forward = aVec;
         explosion.player = player;
         findingZone.gameObject.SetActive(true);
         findingZone.SetUp(findingZoneRadius, player);
